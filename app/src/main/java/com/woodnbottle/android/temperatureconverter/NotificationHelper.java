@@ -1,4 +1,21 @@
 package com.woodnbottle.android.temperatureconverter;
+
+/*
+* Copyright 2017 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -6,21 +23,22 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Color;
 
-
-
 /**
- * Created by woonat01 on 3/5/2018.
- * Source:
- * https://github.com/googlesamples/android-NotificationChannels/blob/master/Application/src/main/java/com/example/android/notificationchannels/NotificationHelper.java
+ * Helper class to manage notification channels, and create notifications.
  */
-
-public class NotificationUtil extends ContextWrapper {
+class NotificationHelper extends ContextWrapper {
     private NotificationManager manager;
     public static final String PRIMARY_CHANNEL = "default";
-    public static final String SECONDARY_CHANNEL = "secondary";
+    public static final String SECONDARY_CHANNEL = "second";
 
-    public NotificationUtil (Context ctx) {
+    /**
+     * Registers notification channels, which can be used later by individual notifications.
+     *
+     * @param ctx The application context
+     */
+    public NotificationHelper(Context ctx) {
         super(ctx);
+
         NotificationChannel chan1 = new NotificationChannel(PRIMARY_CHANNEL,
                 getString(R.string.noti_channel_default), NotificationManager.IMPORTANCE_DEFAULT);
         chan1.setLightColor(Color.GREEN);
@@ -36,12 +54,12 @@ public class NotificationUtil extends ContextWrapper {
 
     /**
      * Get a notification of type 1
-     *
+     * <p>
      * Provide the builder rather than the notification it's self as useful for making notification
      * changes.
      *
      * @param title the title of the notification
-     * @param body the body text for the notification
+     * @param body  the body text for the notification
      * @return the builder as it keeps a reference to the notification (since API 24)
      */
     public Notification.Builder getNotification1(String title, String body) {
@@ -56,7 +74,7 @@ public class NotificationUtil extends ContextWrapper {
      * Build notification for secondary channel.
      *
      * @param title Title for notification.
-     * @param body Message for notification.
+     * @param body  Message for notification.
      * @return A Notification.Builder configured with the selected channel and details
      */
     public Notification.Builder getNotification2(String title, String body) {
@@ -70,7 +88,7 @@ public class NotificationUtil extends ContextWrapper {
     /**
      * Send a notification.
      *
-     * @param id The ID of the notification
+     * @param id           The ID of the notification
      * @param notification The notification object
      */
     public void notify(int id, Notification.Builder notification) {
@@ -88,7 +106,7 @@ public class NotificationUtil extends ContextWrapper {
 
     /**
      * Get the notification manager.
-     *
+     * <p>
      * Utility method as this helper works with it a lot.
      *
      * @return The system service NotificationManager
@@ -98,8 +116,5 @@ public class NotificationUtil extends ContextWrapper {
             manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         }
         return manager;
-
     }
-
-
 }

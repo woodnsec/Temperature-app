@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -13,21 +14,17 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private EditText text;
-
-    private static final String TAG = MainActivity.class.getSimpleName();
-
+    private NotificationHelper noti;
     private static final int NOTI_PRIMARY1 = 1100;
     private static final int NOTI_SECONDARY1 = 1200;
-
-
-    private NotificationUtil noti;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        noti = new NotificationUtil(this);
+        noti = new NotificationHelper(this);
         text = (EditText) findViewById(R.id.inputValue);
+
 
     }
 
@@ -39,32 +36,28 @@ public class MainActivity extends Activity {
                 RadioButton celsiusButton = (RadioButton) findViewById(R.id.radio0);
                 RadioButton fahrenheitButton = (RadioButton) findViewById(R.id.radio1);
                 if (text.getText().length() == 0) {
-                    Toast.makeText(this, "Please enter a valid number",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Please enter a valid number", Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 float inputValue = Float.parseFloat(text.getText().toString());
                 if (celsiusButton.isChecked()) {
-                    text.setText(String
-                            .valueOf(ConverterUtil.convertFahrenheitToCelsius(inputValue)));
+                    String newValue = String.valueOf(ConverterUtil.convertFahrenheitToCelsius(inputValue));
+                    text.setText(newValue);
                     celsiusButton.setChecked(false);
                     fahrenheitButton.setChecked(true);
-                    this.sendNotification(NOTI_PRIMARY1, getString(R.string.default_title));
+                    sendNotification(NOTI_SECONDARY1, inputValue + " degrees Fahrenheit = " + newValue + " degrees Celsius");
 
                 } else {
-                    text.setText(String
-                            .valueOf(ConverterUtil.convertCelsiusToFahrenheit(inputValue)));
+                    String newValue = String.valueOf(ConverterUtil.convertCelsiusToFahrenheit(inputValue));
+                    text.setText(newValue);
                     fahrenheitButton.setChecked(false);
                     celsiusButton.setChecked(true);
-                    //this.sendNotification(NOTI_SECONDARY1, getString(R.string.default_title));
+                    sendNotification(NOTI_PRIMARY1, inputValue + " degrees Celsius = " + newValue + " degrees Fahrenheit");
 
                 }
                 break;
-
         }
-
-
     }
 
     public void sendNotification(int id, String title) {
@@ -74,9 +67,11 @@ public class MainActivity extends Activity {
                 nb = noti.getNotification1(title, getString(R.string.primary1_body));
                 break;
 
+
             case NOTI_SECONDARY1:
-                nb = noti.getNotification1(title, getString(R.string.primary2_body));
+                nb = noti.getNotification2(title, getString(R.string.secondary1_body));
                 break;
+
         }
         if (nb != null) {
             noti.notify(id, nb);
@@ -104,7 +99,3 @@ public class MainActivity extends Activity {
         startActivity(i);
     }
 }
-
-
-
-
