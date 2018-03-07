@@ -1,19 +1,32 @@
 package com.woodnbottle.android.temperatureconverter;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+
 public class MainActivity extends Activity {
     private EditText text;
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final int NOTI_PRIMARY1 = 1100;
+    private static final int NOTI_SECONDARY1 = 1200;
+
+
+    private NotificationUtil noti;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        noti = new NotificationUtil(this);
         text = (EditText) findViewById(R.id.inputValue);
 
     }
@@ -37,15 +50,61 @@ public class MainActivity extends Activity {
                             .valueOf(ConverterUtil.convertFahrenheitToCelsius(inputValue)));
                     celsiusButton.setChecked(false);
                     fahrenheitButton.setChecked(true);
+                    this.sendNotification(NOTI_PRIMARY1, getString(R.string.default_title));
+
                 } else {
                     text.setText(String
                             .valueOf(ConverterUtil.convertCelsiusToFahrenheit(inputValue)));
                     fahrenheitButton.setChecked(false);
                     celsiusButton.setChecked(true);
+                    //this.sendNotification(NOTI_SECONDARY1, getString(R.string.default_title));
+
                 }
                 break;
+
+        }
+
+
+    }
+
+    public void sendNotification(int id, String title) {
+        Notification.Builder nb = null;
+        switch (id) {
+            case NOTI_PRIMARY1:
+                nb = noti.getNotification1(title, getString(R.string.primary1_body));
+                break;
+
+            case NOTI_SECONDARY1:
+                nb = noti.getNotification1(title, getString(R.string.primary2_body));
+                break;
+        }
+        if (nb != null) {
+            noti.notify(id, nb);
         }
     }
 
+    /**
+     * Send Intent to load system Notification Settings for this app.
+     */
+    public void goToNotificationSettings() {
+        Intent i = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+        i.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+        startActivity(i);
+    }
+
+    /**
+     * Send intent to load system Notification Settings UI for a particular channel.
+     *
+     * @param channel Name of channel to configure
+     */
+    public void goToNotificationSettings(String channel) {
+        Intent i = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+        i.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+        i.putExtra(Settings.EXTRA_CHANNEL_ID, channel);
+        startActivity(i);
+    }
 }
+
+
+
 

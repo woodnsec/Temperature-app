@@ -4,4 +4,9 @@
     <string name="celsius">to Celsius</string>
     <string name="fehrenheit">to Farenheit</string>
     <string name="calc">Calculate</string>
+    <string name="default_title">Temperature Conversion</string>
+    <string name="noti_channel_default"></string>
+    <string name="primary1_body">Successful conversion to Farenheit</string>
+    <string name="noti_channel_second"></string>
+    <string name="primary2_body">Successful conversion to Celcius</string>
 </resources>
